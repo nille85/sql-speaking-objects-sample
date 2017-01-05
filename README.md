@@ -1,0 +1,1 @@
+# sql-speaking-objects-sample
