@@ -5,6 +5,7 @@
  */
 package be.nille.dal.auth.database;
 
+import be.nille.dal.auth.database.result.ResultList;
 import be.nille.dal.auth.User;
 import be.nille.dal.auth.Users;
 import java.sql.Connection;
@@ -36,14 +37,7 @@ public class H2Users implements Users {
             connection = dataSource.getConnection();
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM USER");
-            List<User> users = new ArrayList<>();
-            while (rs.next()) {
-                Long id = rs.getLong("USER_ID");
-                String email = rs.getString("USER_EMAIL");
-                String password = rs.getString("USER_PASSWORD");
-                String role = rs.getString("USER_ROLE");
-                users.add(new H2User(id, email, password, role));
-            }
+            List<User> users = fromResultSet(rs);
             return users;
         } catch (SQLException ex) {
             throw new DataAccessException("An exception occurred while trying to retrieve all users", ex);
@@ -52,7 +46,6 @@ public class H2Users implements Users {
 
     @Override
     public Optional<User> findOne(Long id) {
-
         Connection connection;
         try {
             connection = dataSource.getConnection();
@@ -60,13 +53,7 @@ public class H2Users implements Users {
             PreparedStatement stmt = connection.prepareStatement(selectSQL);
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
-            List<User> users = new ArrayList<>();
-            while (rs.next()) {
-                String email = rs.getString("USER_EMAIL");
-                String password = rs.getString("USER_PASSWORD");
-                String role = rs.getString("USER_ROLE");
-                users.add(new H2User(id, email, password, role));
-            }
+            List<User> users = fromResultSet(rs);
             if (!users.isEmpty()) {
                 return Optional.of(users.get(0));
             }
@@ -76,6 +63,21 @@ public class H2Users implements Users {
             throw new DataAccessException("An exception occurred while trying to retrieve all users", ex);
         }
     }
+
+    private List<User> fromResultSet(final ResultSet rs) throws SQLException {
+        return new ResultList<User>(rs) {
+            @Override
+            public User map() throws SQLException {
+                Long id = rs.getLong("USER_ID");
+                String email = rs.getString("USER_EMAIL");
+                String password = rs.getString("USER_PASSWORD");
+                String role = rs.getString("USER_ROLE");
+                return new H2User(id, email, password, role);
+            }
+        }.getList();
+    }
+
+    
 
     @Override
     public User add(String email, String password, String role) {
@@ -94,5 +96,8 @@ public class H2Users implements Users {
             throw new DataAccessException("An exception occurred while trying to add a user", ex);
         }
     }
+    
+    
+   
 
 }

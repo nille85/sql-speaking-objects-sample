@@ -5,6 +5,7 @@
  */
 package be.nille.dal.auth.database;
 
+import be.nille.dal.auth.Token;
 import be.nille.dal.auth.User;
 import lombok.ToString;
 
@@ -47,5 +48,7 @@ public class H2User implements User {
     public String getRole() {
         return role;
     }
+
+    
 
 }

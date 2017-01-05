@@ -7,17 +7,12 @@ package be.nille.dal.auth;
 
 /**
  *
- * @author nholvoet
+ * @author Niels Holvoet
  */
-public interface User {
-
-    Long getId();
-
-    String getEmail();
-
-    String getPassword();
-
-    String getRole();
+public interface Token {
     
-
+    Long getId();
+    
+    String getValue();
+    
 }
