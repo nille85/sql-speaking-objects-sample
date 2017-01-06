@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package be.nille.dal.auth.database;
+package be.nille.dal.auth.database.exception;
 
 /**
  *
@@ -13,6 +13,10 @@ public class DataAccessException extends RuntimeException {
 
     public DataAccessException(final String message, final Throwable throwable) {
         super(message, throwable);
+    }
+
+    public DataAccessException(final String message) {
+        super(message);
     }
 
 }

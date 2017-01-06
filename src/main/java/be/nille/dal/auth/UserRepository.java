@@ -11,12 +11,12 @@ import java.util.Optional;
  *
  * @author nholvoet
  */
-public interface Users {
+public interface UserRepository {
 
     Optional<User> findOne(Long id);
 
     Iterable<User> findAll();
 
-    User add(String email, String password, String role);
+    User add(final User user);
 
 }

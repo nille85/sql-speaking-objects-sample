@@ -5,19 +5,40 @@
  */
 package be.nille.dal.auth;
 
+import be.nille.dal.auth.database.exception.DataAccessException;
+import lombok.ToString;
+
 /**
  *
  * @author nholvoet
  */
-public interface User {
+@ToString
+public class User {
 
-    Long getId();
+    private final String email;
+    private final String password;
+    private final String role;
 
-    String getEmail();
+    public User(final String email, final String password, final String role) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 
-    String getPassword();
+    public String getEmail() {
+        return email;
+    }
 
-    String getRole();
-    
+    public String getPassword() {
+        return password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public Long getId() {
+        throw new DataAccessException("Id is not available yet, because it was not yet persisted");
+    }
 
 }

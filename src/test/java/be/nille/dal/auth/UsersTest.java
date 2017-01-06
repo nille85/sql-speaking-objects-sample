@@ -5,15 +5,14 @@
  */
 package be.nille.dal.auth;
 
-import be.nille.dal.auth.database.H2Users;
+import be.nille.dal.auth.database.H2TokenRepository;
+import be.nille.dal.auth.database.H2UserRepository;
 import be.nille.dal.auth.helper.SQLFile;
 import be.nille.dal.auth.helper.SQLFileTest;
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import javax.sql.DataSource;
+import java.util.Optional;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -41,16 +40,36 @@ public class UsersTest {
 
     @Test
     public void users() {
-        Users users = new H2Users(ds);
+        UserRepository users = new H2UserRepository(ds);
         users.findAll().iterator().forEachRemaining(System.out::println);
 
     }
 
     @Test
-    public void add() {
-        Users users = new H2Users(ds);
-        users.add("another@doe.be", "john", "user");
-        users.findAll().iterator().forEachRemaining(System.out::println);
+    public void addUser() {
+        UserRepository repository = new H2UserRepository(ds);
+        User user = new User("another@doe.be", "john", "user");
+        repository.add(user);
+        repository.findAll().iterator().forEachRemaining(System.out::println);
+    }
+
+    @Test
+    public void addToken() {
+
+        UserRepository users = new H2UserRepository(ds);
+        TokenRepository tokens = new H2TokenRepository(ds);
+
+        String tokenValue = "token value";
+        Long userId = 1L;
+
+        users.findOne(userId)
+                .ifPresent(user -> {
+                    tokens.addTokenForUser(user.getId(), tokenValue);
+                });
+        tokens.findByUserId(userId)
+                .stream()
+                .forEach(System.out::println);
+
     }
 
 }

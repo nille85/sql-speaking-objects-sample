@@ -6,19 +6,21 @@
 package be.nille.dal.auth.database;
 
 import be.nille.dal.auth.Token;
+import lombok.ToString;
 
 /**
  *
  * @author Niels Holvoet
  */
-public class H2Token implements Token {
-    
+@ToString
+public class H2Token extends Token {
+
     private final Long id;
-    private final String value;
-    
-    public H2Token(final Long id, final String value){
+
+    public H2Token(final Long id, final String value, final Long userId) {
+        super(value, userId);
         this.id = id;
-        this.value = value;
+
     }
 
     @Override
@@ -26,11 +28,4 @@ public class H2Token implements Token {
         return id;
     }
 
-    @Override
-    public String getValue() {
-        return value;
-    }
-    
-    
-    
 }

@@ -5,14 +5,33 @@
  */
 package be.nille.dal.auth;
 
+import be.nille.dal.auth.database.exception.DataAccessException;
+
 /**
  *
  * @author Niels Holvoet
  */
-public interface Token {
-    
-    Long getId();
-    
-    String getValue();
-    
+public class Token {
+
+    private final String value;
+    private final Long userId;
+
+    public Token(final String value, final Long userId) {
+
+        this.value = value;
+        this.userId = userId;
+    }
+
+    public Long getId() {
+        throw new DataAccessException("Id is not available yet, because it was not yet persisted");
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
 }

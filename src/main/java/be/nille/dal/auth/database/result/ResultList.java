@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  *
@@ -32,6 +33,15 @@ public abstract class ResultList<T> {
         List<T> entries = new ArrayList<>();
         while (resultSet.next()) {
             T entry = map();
+            entries.add(entry);
+        }
+        return entries;
+    }
+
+    public List<T> mapFromResultSet(final ResultSet resultSet, Function<ResultSet, T> lambda) throws SQLException {
+        List<T> entries = new ArrayList<>();
+        while (resultSet.next()) {
+            T entry = lambda.apply(resultSet);
             entries.add(entry);
         }
         return entries;

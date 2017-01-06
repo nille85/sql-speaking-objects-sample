@@ -5,15 +5,16 @@
  */
 package be.nille.dal.auth.database;
 
-import be.nille.dal.auth.database.result.ResultList;
+import be.nille.dal.auth.database.exception.DataAccessException;
 import be.nille.dal.auth.User;
-import be.nille.dal.auth.Users;
+import be.nille.dal.auth.User;
+import be.nille.dal.auth.UserRepository;
+import be.nille.dal.auth.database.result.ImprovedResultList;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
@@ -22,11 +23,11 @@ import javax.sql.DataSource;
  *
  * @author nholvoet
  */
-public class H2Users implements Users {
+public class H2UserRepository implements UserRepository {
 
     private final DataSource dataSource;
 
-    public H2Users(final DataSource dataSource) {
+    public H2UserRepository(final DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
@@ -65,39 +66,44 @@ public class H2Users implements Users {
     }
 
     private List<User> fromResultSet(final ResultSet rs) throws SQLException {
-        return new ResultList<User>(rs) {
-            @Override
-            public User map() throws SQLException {
-                Long id = rs.getLong("USER_ID");
-                String email = rs.getString("USER_EMAIL");
-                String password = rs.getString("USER_PASSWORD");
-                String role = rs.getString("USER_ROLE");
-                return new H2User(id, email, password, role);
-            }
-        }.getList();
+
+        ImprovedResultList<User> resultList = new ImprovedResultList<>();
+        return resultList.mapFromResultSet(rs,
+                () -> {
+                    try {
+                        Long id = rs.getLong("USER_ID");
+                        String email = rs.getString("USER_EMAIL");
+                        String password = rs.getString("USER_PASSWORD");
+                        String role = rs.getString("USER_ROLE");
+                        return new H2User(id,
+                                new User(email, password, role)
+                        );
+                    } catch (SQLException ex) {
+                        throw new DataAccessException("An exception occurred while trying to map user", ex);
+                    }
+                }
+        );
+
     }
 
-    
-
     @Override
-    public User add(String email, String password, String role) {
+    public User add(User user) {
         Connection connection;
         try {
             connection = dataSource.getConnection();
             final String sql = "INSERT INTO USER (USER_EMAIL, USER_PASSWORD, USER_ROLE)"
                     + " VALUES (?,?,?);";
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, email);
-            stmt.setString(2, password);
-            stmt.setString(3, role);
+            stmt.setString(1, user.getEmail());
+            stmt.setString(2, user.getPassword());
+            stmt.setString(3, user.getRole());
             int id = stmt.executeUpdate();
-            return new H2User((long) id, email, password, role);
+            return new H2User((long) id,
+                    new User(user.getEmail(), user.getPassword(), user.getRole())
+            );
         } catch (SQLException ex) {
             throw new DataAccessException("An exception occurred while trying to add a user", ex);
         }
     }
-    
-    
-   
 
 }

@@ -5,7 +5,7 @@
  */
 package be.nille.dal.auth.database;
 
-import be.nille.dal.auth.Token;
+import be.nille.dal.auth.User;
 import be.nille.dal.auth.User;
 import lombok.ToString;
 
@@ -14,41 +14,18 @@ import lombok.ToString;
  * @author nholvoet
  */
 @ToString
-public class H2User implements User {
+public class H2User extends User {
 
     private final Long id;
-    private final String email;
-    private final String password;
-    private final String role;
 
-    public H2User(final Long id, final String email, final String password, final String role) {
+    public H2User(final Long id, final User origin) {
+        super(origin.getEmail(), origin.getPassword(), origin.getRole());
         this.id = id;
-        this.email = email;
-        this.password = password;
-        this.role = role;
     }
 
     @Override
     public Long getId() {
         return id;
     }
-
-    @Override
-    public String getEmail() {
-        return email;
-
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getRole() {
-        return role;
-    }
-
-    
 
 }
