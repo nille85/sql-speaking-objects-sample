@@ -3,20 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package be.nille.dal.auth;
+package be.nille.dal.component.user;
 
-import java.util.Optional;
+import java.util.List;
 
 /**
  *
  * @author nholvoet
  */
-public interface UserRepository {
+public interface TokenRepository {
 
-    Optional<User> findOne(Long id);
+    List<Token> findByUserId(Long userId);
 
-    Iterable<User> findAll();
-
-    User add(final User user);
+    Token addTokenForUser(final Token token);
 
 }

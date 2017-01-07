@@ -6,9 +6,9 @@
 package be.nille.dal.auth.database;
 
 import be.nille.dal.auth.database.exception.DataAccessException;
-import be.nille.dal.auth.User;
-import be.nille.dal.auth.User;
-import be.nille.dal.auth.UserRepository;
+import be.nille.dal.component.user.User;
+import be.nille.dal.component.user.User;
+import be.nille.dal.component.user.UserRepository;
 import be.nille.dal.auth.database.result.ImprovedResultList;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

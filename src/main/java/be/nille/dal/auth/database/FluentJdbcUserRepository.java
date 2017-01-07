@@ -6,22 +6,13 @@
 package be.nille.dal.auth.database;
 
 import be.nille.dal.auth.database.exception.DataAccessException;
-import be.nille.dal.auth.User;
-import be.nille.dal.auth.UserRepository;
-import be.nille.dal.auth.database.result.ImprovedResultList;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
+import be.nille.dal.component.user.User;
+import be.nille.dal.component.user.UserRepository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
 import java.util.Optional;
-import javax.sql.DataSource;
-import org.codejargon.fluentjdbc.api.FluentJdbc;
-import org.codejargon.fluentjdbc.api.FluentJdbcBuilder;
 import org.codejargon.fluentjdbc.api.mapper.Mappers;
 import org.codejargon.fluentjdbc.api.query.Query;
-import org.codejargon.fluentjdbc.api.query.UpdateResult;
 import org.codejargon.fluentjdbc.api.query.UpdateResultGenKeys;
 
 /**
@@ -32,11 +23,8 @@ public class FluentJdbcUserRepository implements UserRepository {
 
     private final Query query;
 
-    public FluentJdbcUserRepository(final DataSource dataSource) {
-        FluentJdbc fluentJdbc = new FluentJdbcBuilder()
-                .connectionProvider(dataSource)
-                .build();
-        query = fluentJdbc.query();
+    public FluentJdbcUserRepository(final Query query) {
+        this.query = query;
     }
 
     @Override

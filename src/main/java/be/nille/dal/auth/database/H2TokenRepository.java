@@ -5,8 +5,8 @@
  */
 package be.nille.dal.auth.database;
 
-import be.nille.dal.auth.Token;
-import be.nille.dal.auth.TokenRepository;
+import be.nille.dal.component.user.Token;
+import be.nille.dal.component.user.TokenRepository;
 import be.nille.dal.auth.database.exception.DataAccessException;
 import be.nille.dal.auth.database.result.ResultList;
 import java.sql.Connection;
@@ -52,23 +52,23 @@ public class H2TokenRepository implements TokenRepository {
                 String value = rs.getString("TOKEN_VALUE");
                 Long userId = rs.getLong("USER_ID");
 
-                return new H2Token(id, value, userId);
+                return new H2Token(id, new Token(value, userId));
             }
         }.getList();
     }
 
     @Override
-    public Token addTokenForUser(Long userId, String value) {
+    public Token addTokenForUser(final Token token) {
         Connection connection;
         try {
             connection = dataSource.getConnection();
             final String sql = "INSERT INTO TOKEN (TOKEN_VALUE, USER_ID)"
                     + " VALUES (?,?);";
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, value);
-            stmt.setLong(2, userId);
+            stmt.setString(1, token.getValue());
+            stmt.setLong(2, token.getUserId());
             int id = stmt.executeUpdate();
-            return new H2Token((long) id, value, userId);
+            return new H2Token((long) id, new Token(token.getValue(), token.getUserId()));
         } catch (SQLException ex) {
             throw new DataAccessException("An exception occurred while trying to add a user", ex);
         }

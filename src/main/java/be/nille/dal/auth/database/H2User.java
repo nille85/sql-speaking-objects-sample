@@ -5,8 +5,8 @@
  */
 package be.nille.dal.auth.database;
 
-import be.nille.dal.auth.User;
-import be.nille.dal.auth.User;
+import be.nille.dal.component.user.User;
+import be.nille.dal.component.user.User;
 import lombok.ToString;
 
 /**
